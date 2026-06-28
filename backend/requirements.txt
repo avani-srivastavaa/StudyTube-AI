@@ -1,0 +1,38 @@
+# Web Framework
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic
+pydantic-settings
+
+# Supabase
+supabase
+
+# AI — Gemini
+# google-genai is the current, actively maintained SDK. The original spec's
+# google-generativeai and langchain-google-genai are both built on the now
+# fully-deprecated legacy package (see github.com/google-gemini/deprecated-
+# generative-ai-python) and are intentionally NOT installed.
+google-genai
+
+# RAG / vector search
+# The bare `langchain` meta-package is intentionally omitted — it is never
+# imported anywhere in this codebase (only langchain_community and
+# langchain_text_splitters are), and pulling it in is what previously forced
+# numpy<2.0.0, which has no prebuilt wheel for Python 3.13.
+langchain-community
+langchain-text-splitters
+
+# Vector Database
+# sentence-transformers is intentionally omitted — it was never imported
+# anywhere in this codebase, and pulls in torch (large, slow to install,
+# adds nothing for our use case since embeddings now go through google-genai).
+faiss-cpu
+
+# YouTube
+youtube-transcript-api
+yt-dlp
+
+# Utilities
+python-dotenv
+httpx
