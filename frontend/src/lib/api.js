@@ -15,9 +15,16 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api
 // UI spinning forever with zero feedback, since nothing here ever failed.
 // Most calls are simple reads/writes and should never legitimately take
 // long; a few (full-video generation, chat) are allowed more time.
-const DEFAULT_TIMEOUT_MS = 20000
-const SLOW_TIMEOUT_MS = 150000 // generate/all runs 4 sequential AI calls with rate-limit spacing
-const MEDIUM_TIMEOUT_MS = 60000 // single generation calls, chat (first message builds an index)
+// Every request gets a hard timeout — previously a hung backend or
+// unreachable Supabase project (e.g. a paused free-tier project) left the
+// UI spinning forever with zero feedback, since nothing here ever failed.
+// These are generous enough to also cover Render's free-tier cold start
+// (the backend sleeps after 15 min idle; the next request takes up to ~60s
+// to wake it — that's on TOP of whatever the call itself takes, so each
+// timeout below budgets for "cold start + actual work", not just the work).
+const DEFAULT_TIMEOUT_MS = 65000
+const SLOW_TIMEOUT_MS = 180000 // generate/all: 4 sequential AI calls with rate-limit spacing, plus possible cold start
+const MEDIUM_TIMEOUT_MS = 90000 // single generation calls, chat (first message builds an index), plus possible cold start
 
 async function authHeader() {
   if (!supabaseConfigured) return {}
